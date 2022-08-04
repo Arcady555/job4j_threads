@@ -7,14 +7,14 @@ public class StrategyGetContent {
 
     public String content(Predicate<Integer> filter, File file) throws IOException {
         try (BufferedInputStream bIS = new BufferedInputStream(new FileInputStream(file))) {
-            String output = "";
+            StringBuilder output = new StringBuilder();
             int data;
-            while ((data = bIS.read()) > 0) {
+            while ((data = bIS.read()) != -1) {
                 if (filter.test(data)) {
-                    output += (char) data;
+                    output.append((char) data);
                 }
             }
-            return output;
+            return output.toString();
         }
     }
 }

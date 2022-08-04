@@ -5,6 +5,8 @@ import java.io.*;
 public final class ParseFileGet {
     private final File file;
 
+    StrategyGetContent sGC = new StrategyGetContent();
+
     public ParseFileGet(File file) {
         this.file = file;
     }
@@ -12,8 +14,6 @@ public final class ParseFileGet {
     public synchronized File getFile() {
         return file;
     }
-
-    StrategyGetContent sGC = new StrategyGetContent();
 
     public String getContent() throws IOException {
         return sGC.content(s -> true, file);
