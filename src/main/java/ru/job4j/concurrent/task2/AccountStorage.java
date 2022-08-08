@@ -10,30 +10,24 @@ public class AccountStorage {
 
     @GuardedBy("this")
     private final HashMap<Integer, Account> accounts = new HashMap<>();
-    private volatile int key = 0;
 
     public synchronized boolean add(Account account) {
-        accounts.putIfAbsent(key++, account);
-        return accounts.get(key) != null;
+        accounts.putIfAbsent(account.id(), account);
+        return accounts.get(account.id()) != null;
     }
 
     public synchronized boolean update(Account account) {
-        accounts.put(accounts.keySet()
-                .stream().filter(s -> accounts.get(s).id() == account.id())
-                .findFirst().get(),
-                account);
+        accounts.put(account.id(), account);
         return getById(account.id()).get().amount() == account.amount();
     }
 
     public synchronized boolean delete(int id) {
-        accounts.remove(accounts.entrySet().stream()
-                .filter(s -> s.getValue().equals(getById(id).get()))
-                .findFirst().get().getKey());
+        accounts.remove(id);
         return getById(id).equals(Optional.empty());
     }
 
     public synchronized Optional<Account> getById(int id) {
-        return accounts.values().stream().filter(s -> s.id() == id).findFirst();
+        return Optional.ofNullable(accounts.get(id));
     }
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
