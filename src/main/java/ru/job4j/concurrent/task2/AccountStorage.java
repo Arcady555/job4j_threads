@@ -12,18 +12,15 @@ public class AccountStorage {
     private final HashMap<Integer, Account> accounts = new HashMap<>();
 
     public synchronized boolean add(Account account) {
-        accounts.putIfAbsent(account.id(), account);
-        return accounts.get(account.id()) != null;
+        return accounts.putIfAbsent(account.id(), account) != null;
     }
 
     public synchronized boolean update(Account account) {
-        accounts.put(account.id(), account);
-        return getById(account.id()).get().amount() == account.amount();
+        return accounts.replace(account.id(), account) != null;
     }
 
     public synchronized boolean delete(int id) {
-        accounts.remove(id);
-        return getById(id).equals(Optional.empty());
+        return accounts.remove(id) != null;
     }
 
     public synchronized Optional<Account> getById(int id) {
@@ -32,17 +29,15 @@ public class AccountStorage {
 
     public synchronized boolean transfer(int fromId, int toId, int amount) {
         boolean rsl = false;
-        if (getById(fromId).isPresent() && getById(toId).isPresent()) {
-            Account accountFrom = getById(fromId).get();
-            Account accountTo = getById(toId).get();
-                int amountFrom = accountFrom.amount();
-                int amountTo = accountTo.amount();
-                if (amountFrom >= amount) {
-                    update(new Account(fromId, amountFrom - amount));
-                    update(new Account(toId, amountTo + amount));
-                    rsl = getById(toId).get().amount() == amountTo + amount;
-                }
-            }
+        Optional<Account> accountFrom = getById(fromId);
+        Optional<Account> accountTo = getById(toId);
+        if (accountFrom.isPresent() && accountTo.isPresent() && accountFrom.get().amount() >= amount) {
+            int amountFrom = accountFrom.get().amount();
+            int amountTo = accountTo.get().amount();
+            update(new Account(fromId, amountFrom - amount));
+            update(new Account(toId, amountTo + amount));
+            rsl = true;
+        }
         return rsl;
     }
 }
