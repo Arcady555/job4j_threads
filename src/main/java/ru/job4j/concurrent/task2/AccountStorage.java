@@ -7,6 +7,7 @@ import java.util.*;
 
 @ThreadSafe
 public class AccountStorage {
+
     @GuardedBy("this")
     private final HashMap<Integer, Account> accounts = new HashMap<>();
     private volatile int key = 0;
