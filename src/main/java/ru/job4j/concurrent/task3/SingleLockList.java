@@ -4,8 +4,6 @@ import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @ThreadSafe
 public class SingleLockList<T> implements Iterable<T> {
@@ -14,7 +12,7 @@ public class SingleLockList<T> implements Iterable<T> {
     private final List<T> list;
 
     public SingleLockList() {
-        this.list = copy(Stream.of(new Object[]{}).collect(Collectors.toList()));
+        this.list = new ArrayList<>();
     }
 
     public SingleLockList(List<T> list) {
@@ -35,6 +33,6 @@ public class SingleLockList<T> implements Iterable<T> {
     }
 
     private List<T> copy(List list) {
-        return (List<T>) list.stream().collect(Collectors.toList());
+        return new ArrayList<>(list);
     }
 }
