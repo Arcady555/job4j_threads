@@ -22,18 +22,26 @@ public class SimpleBlockingQueueTest {
         producer.add(5);
         List<Integer> consumer = new ArrayList<>();
         Thread first = new Thread(() -> {
-            int i = 0;
-            while (i < limit) {
-                list.offer(producer.get(i));
-                producer.set(i, 0);
-                i++;
+            try {
+                int i = 0;
+                while (i < limit) {
+                    list.offer(producer.get(i));
+                    producer.set(i, 0);
+                    i++;
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         });
         Thread second = new Thread(() -> {
-            int i = 0;
-            while (i < limit) {
-                consumer.add(list.poll());
-                i++;
+            try {
+                int i = 0;
+                while (i < limit) {
+                    consumer.add(list.poll());
+                    i++;
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         });
         first.start();

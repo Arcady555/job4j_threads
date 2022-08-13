@@ -17,31 +17,20 @@ public class SimpleBlockingQueue<T> {
         this.limit = limit;
     }
 
-    public synchronized void offer(T value) {
+    public synchronized void offer(T value) throws InterruptedException {
         while (queue.size() == limit) {
-            try {
-                this.wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        if (queue.size() == 0) {
-            this.notifyAll();
+            this.wait();
         }
         queue.offer(value);
+        this.notifyAll();
     }
 
-    public synchronized T poll() {
+    public synchronized T poll() throws InterruptedException {
         while (queue.size() == 0) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            this.wait();
         }
-        if (queue.size() == limit) {
-            notifyAll();
-        }
-        return queue.poll();
+        T rsl = queue.poll();
+        this.notifyAll();
+        return rsl;
     }
 }
