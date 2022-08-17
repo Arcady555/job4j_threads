@@ -6,37 +6,24 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @ThreadSafe
 public class CASCount {
-    private int intCount;
 
-    private final AtomicReference<Integer> count = new AtomicReference<>(intCount);
+    private final AtomicReference<Integer> count = new AtomicReference<>();
 
-    public CASCount(int intCount) {
-        this.intCount = intCount;
+    public CASCount(int setStart) {
+        count.set(setStart);
     }
 
     public void increment() {
         int ref;
+        int temp;
         do {
             ref = count.get();
-            if (!count.get().getClass().equals(Integer.class)) {
-                throw new UnsupportedOperationException("Count is not impl.");
-            }
-            intCount++;
-        } while (!count.compareAndSet(ref, intCount));
+            temp = ref;
+            temp++;
+        } while (!count.compareAndSet(ref, temp));
     }
 
     public int get() {
-        int ref;
-        do {
-            ref = count.get();
-            if (!count.get().getClass().equals(Integer.class)) {
-                throw new UnsupportedOperationException("Count is not impl.");
-            }
-        } while (!count.compareAndSet(ref, intCount));
-        return ref;
-    }
-
-    public Integer getIntCountForTest() {
-        return intCount;
+        return count.get();
     }
 }

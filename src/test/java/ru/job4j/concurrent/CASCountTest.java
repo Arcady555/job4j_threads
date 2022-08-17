@@ -10,33 +10,25 @@ public class CASCountTest {
     @Test
     public void whenGetIncrement() throws InterruptedException {
         CASCount casCount = new CASCount(0);
+
         Thread first = new Thread(
                 () -> {
-                    casCount.increment();
-                    casCount.get();
-                    casCount.increment();
+                    for (int i = 0; i < 64; i++) {
+                        casCount.increment();
+                    }
                 }
                 );
         Thread second = new Thread(
                 () -> {
-                    casCount.increment();
-                    casCount.get();
-                    casCount.increment();
-                    casCount.increment();
-                }
-        );
-        Thread third = new Thread(
-                () -> {
-                    casCount.increment();
-                    casCount.get();
+                    for (int i = 0; i < 64; i++) {
+                        casCount.increment();
+                    }
                 }
         );
         first.start();
         second.start();
-        third.start();
         first.join();
         second.join();
-        third.join();
-        Assert.assertThat(casCount.getIntCountForTest(), is(6));
+        Assert.assertThat(casCount.get(), is(128));
     }
 }
