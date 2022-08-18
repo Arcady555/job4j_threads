@@ -19,7 +19,7 @@ public class Cache {
             value = new Base(model.getId(), model.getVersion() + 1);
             value.setName(model.getName());
             return value;
-        }) == null;
+        }) != null;
     }
 
     public void delete(Base model) {
