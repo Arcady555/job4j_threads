@@ -9,18 +9,17 @@ public class CASCountTest {
 
     @Test
     public void whenGetIncrement() throws InterruptedException {
-        CASCount casCount = new CASCount(0);
-
+        CASCount casCount = new CASCount();
         Thread first = new Thread(
                 () -> {
-                    for (int i = 0; i < 64; i++) {
+                    for (int i = 0; i < 100; i++) {
                         casCount.increment();
                     }
                 }
-                );
+        );
         Thread second = new Thread(
                 () -> {
-                    for (int i = 0; i < 64; i++) {
+                    for (int i = 0; i < 100; i++) {
                         casCount.increment();
                     }
                 }
@@ -29,6 +28,6 @@ public class CASCountTest {
         second.start();
         first.join();
         second.join();
-        Assert.assertThat(casCount.get(), is(128));
+        Assert.assertThat(casCount.get(), is(200));
     }
 }
