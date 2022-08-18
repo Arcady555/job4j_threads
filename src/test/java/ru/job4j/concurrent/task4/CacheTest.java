@@ -68,8 +68,6 @@ public class CacheTest {
         Cache cache = new Cache();
         Base base1 = new Base(1, 1);
         Base base2 = new Base(2, 1);
-        base1.setName("Stas");
-        base2.setName("Arcady");
         cache.add(base1);
         cache.add(base2);
         cache.delete(base2);
