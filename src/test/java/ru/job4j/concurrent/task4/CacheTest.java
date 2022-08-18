@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class CacheTest {
 
@@ -19,6 +18,20 @@ public class CacheTest {
         cache.add(base1);
         cache.add(base2);
         Assert.assertThat(cache.getMemoryForTest().get(1).getName(), is("Stas"));
+    }
+
+    @Test
+    public void addCheckByReturnBoolean() {
+        Cache cache = new Cache();
+        Base base1 = new Base(1, 1);
+        Base base2 = new Base(2, 1);
+        Base base3 = new Base(1, 1);
+        boolean rsl1 = cache.add(base1);
+        boolean rsl2 = cache.add(base2);
+        boolean rsl3 = cache.add(base3);
+        Assert.assertTrue(rsl1);
+        Assert.assertTrue(rsl2);
+        Assert.assertFalse(rsl3);
     }
 
     @Test
@@ -36,7 +49,7 @@ public class CacheTest {
 
     @Test
     public void whenUpdateNotEqualVersions() {
-        RuntimeException thrown = Assertions.assertThrows(RuntimeException.class, () -> {
+        RuntimeException thrown = Assertions.assertThrows(OptimisticException.class, () -> {
             Cache cache = new Cache();
             Base base1 = new Base(1, 1);
             Base base2 = new Base(1, 1);

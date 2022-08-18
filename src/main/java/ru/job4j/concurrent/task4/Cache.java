@@ -1,5 +1,6 @@
 package ru.job4j.concurrent.task4;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,24 +12,21 @@ public class Cache {
     }
 
     public boolean update(Base model) {
-        return memory.computeIfPresent(model.getId(), (a, b) -> {
-            int v1 = model.getVersion();
-            int v2 = memory.get(model.getId()).getVersion();
-            if (v1 != v2) {
-                throw new RuntimeException("Versions are not equal");
+        return memory.computeIfPresent(model.getId(), (key, value) -> {
+            if (model.getVersion() != value.getVersion()) {
+                throw new OptimisticException("Versions are not equal");
             }
-            v1++;
-            b = new Base(model.getId(), v1);
-            b.setName(model.getName());
-            return b;
+            value = new Base(model.getId(), model.getVersion() + 1);
+            value.setName(model.getName());
+            return value;
         }) == null;
     }
 
     public void delete(Base model) {
-        memory.remove(2);
+        memory.remove(model.getId());
     }
 
     public Map<Integer, Base> getMemoryForTest() {
-        return memory;
+        return Collections.synchronizedMap(memory);
     }
 }
