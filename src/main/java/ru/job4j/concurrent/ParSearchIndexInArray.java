@@ -36,15 +36,8 @@ public class ParSearchIndexInArray<T> extends RecursiveTask<ArrayList<Integer>> 
         return rsl;
     }
 
-    public ArrayList<Integer> search(T[] array, T element) {
+    public static <T> ArrayList<Integer> search(T[] array, T element) {
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         return forkJoinPool.invoke(new ParSearchIndexInArray<>(array, element, 0, array.length - 1));
-    }
-
-    public static void main(String[] args) {
-        Integer[] array = new Integer[] {1, 2, 3, 4, 2, 6, 7, 8, 9, 2, 11, 12, 2, 14, 15, 2};
-        ParSearchIndexInArray<Integer> pSIIA =
-                new ParSearchIndexInArray<>(array, 2, 0, array.length - 1);
-        System.out.println(pSIIA.search(array, 2));
     }
 }
