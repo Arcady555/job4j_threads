@@ -1,10 +1,9 @@
 package ru.job4j.concurrent;
 
-import java.util.ArrayList;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
 
-public class ParSearchIndexInArray<T> extends RecursiveTask<ArrayList<Integer>>  {
+public class ParSearchIndexInArray<T> extends RecursiveTask<Integer>  {
 
     private final T[] array;
     private final T element;
@@ -19,25 +18,31 @@ public class ParSearchIndexInArray<T> extends RecursiveTask<ArrayList<Integer>> 
     }
 
     @Override
-    protected ArrayList<Integer> compute() {
-        ArrayList<Integer> rsl = new ArrayList<>();
+    protected Integer compute() {
         if (to - from <= 10) {
-            for (int i = 0; i < array.length; i++) {
-                if (array[i].equals(element)) {
-                    rsl.add(i);
-                }
-            }
+            return lineSearch();
         } else {
             int mid = (from + to) / 2;
             ParSearchIndexInArray<T> left = new ParSearchIndexInArray<>(array, element, from, mid);
+            ParSearchIndexInArray<T> right = new ParSearchIndexInArray<>(array, element, mid + 1, to);
             left.fork();
-            rsl.addAll(left.join());
+            right.fork();
+            return left.join() != -1 ? left.join() : right.join();
         }
-        return rsl;
     }
 
-    public static <T> ArrayList<Integer> search(T[] array, T element) {
+    public static <T> Integer search(T[] array, T element) {
         ForkJoinPool forkJoinPool = new ForkJoinPool();
         return forkJoinPool.invoke(new ParSearchIndexInArray<>(array, element, 0, array.length - 1));
+    }
+
+    private int lineSearch() {
+        int rsl = -1;
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equals(element)) {
+                rsl = i;
+            }
+        }
+        return rsl;
     }
 }
