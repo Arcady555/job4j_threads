@@ -34,4 +34,11 @@ class ParSearchIndexInArrayTest {
         int rsl = ParSearchIndexInArray.search(array, 22);
         assertEquals(rsl, -1);
     }
+
+    @Test
+    public void whenFoundLast() {
+        Integer[] array = new Integer[] {1, 2, 3, 4, 2, 6, 7, 8, 9, 2, 11, 12, 2, 14, 7, 16};
+        int rsl = ParSearchIndexInArray.search(array, 16);
+        assertEquals(rsl, 15);
+    }
 }

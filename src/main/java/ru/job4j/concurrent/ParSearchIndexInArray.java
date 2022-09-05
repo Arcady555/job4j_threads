@@ -21,14 +21,13 @@ public class ParSearchIndexInArray<T> extends RecursiveTask<Integer>  {
     protected Integer compute() {
         if (to - from <= 10) {
             return lineSearch();
-        } else {
-            int mid = (from + to) / 2;
-            ParSearchIndexInArray<T> left = new ParSearchIndexInArray<>(array, element, from, mid);
-            ParSearchIndexInArray<T> right = new ParSearchIndexInArray<>(array, element, mid + 1, to);
-            left.fork();
-            right.fork();
-            return left.join() != -1 ? left.join() : right.join();
         }
+        int mid = (from + to) / 2;
+        ParSearchIndexInArray<T> left = new ParSearchIndexInArray<>(array, element, from, mid);
+        ParSearchIndexInArray<T> right = new ParSearchIndexInArray<>(array, element, mid + 1, to);
+        left.fork();
+        right.fork();
+        return left.join() != -1 ? left.join() : right.join();
     }
 
     public static <T> Integer search(T[] array, T element) {
@@ -41,6 +40,7 @@ public class ParSearchIndexInArray<T> extends RecursiveTask<Integer>  {
         for (int i = 0; i < array.length; i++) {
             if (array[i].equals(element)) {
                 rsl = i;
+                break;
             }
         }
         return rsl;
