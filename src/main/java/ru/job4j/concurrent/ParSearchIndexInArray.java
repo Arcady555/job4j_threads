@@ -37,7 +37,7 @@ public class ParSearchIndexInArray<T> extends RecursiveTask<Integer>  {
 
     private int lineSearch() {
         int rsl = -1;
-        for (int i = 0; i < array.length; i++) {
+        for (int i = from; i <= to; i++) {
             if (array[i].equals(element)) {
                 rsl = i;
                 break;
