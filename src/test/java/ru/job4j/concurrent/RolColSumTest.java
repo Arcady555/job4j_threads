@@ -1,9 +1,9 @@
 package ru.job4j.concurrent;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+import ru.job4j.concurrent.task6.RolColSum;
+import ru.job4j.concurrent.task6.Sums;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
@@ -19,9 +19,9 @@ class RolColSumTest {
                 matrix[i][j] = i + j;
             }
         }
-        RolColSum.Sums[] expected = new RolColSum.Sums[3];
+        Sums[] expected = new Sums[3];
         for (int i = 0; i < expected.length; i++) {
-            expected[i] = new RolColSum.Sums();
+            expected[i] = new Sums();
         }
         expected[0].setRowSum(3);
         expected[0].setColSum(3);
